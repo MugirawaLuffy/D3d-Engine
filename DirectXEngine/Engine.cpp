@@ -2,7 +2,13 @@
 
 bool Engine::Initialize(HINSTANCE hInstance, std::string window_title, std::string window_class, int width, int height)
 {
-	return this->render_window.Initialize(this, hInstance, window_title, window_class, width, height);
+	if (!this->render_window.Initialize(this, hInstance, window_title, window_class, width, height))
+		return false;
+
+	if (!gfx.Initialize(this->render_window.GetHWND(), width, height))
+		return false;
+
+	return true;
 	//initialize Graphics
 }
 
@@ -28,4 +34,9 @@ void Engine::Update()
 		MouseEvent me = mouse.ReadEvent();
 	
 	}
+}
+
+void Engine::RenderFrame()
+{
+	gfx.RenderFrame();
 }
