@@ -3,7 +3,7 @@
 * @author Nils Drees
 * C++20 Iso needed to compile x86
 * Licensed under Apache 2.0
-* 15 hours development
+* 15.5 hours development
 */
 
 #include "Engine.h"
@@ -50,6 +50,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 //OUTPUT MERGER			- COMPLETED      -------------------- SETUP COMPLETE (14 hours) ------------------------
 
 
-//--------------------------------------------------------------------------------------------------------------
-//Create VertexBuffer   - TODO
-//Draw					- TODO
+//----------------------------Advanced Setup for DirectX---------------------------------------------------------
+//Create VertexBuffer   - COMPLETED
+//Draw					- COMPLETED
+//Rasterizer State		- COMPLETED
