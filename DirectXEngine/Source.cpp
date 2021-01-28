@@ -8,7 +8,6 @@
 
 #include "Engine.h"
 
-
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE  hPrevInstance,
 	_In_ LPWSTR			lpCMDLine,
@@ -74,7 +73,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 //Draw					- COMPLETED
 //Rasterizer State		- COMPLETED
 //Z-DEPTH-BUFFER		- COMPLETED
-//FONT SPRITE			- COMPLETED		----------------------------- 17 hours ----------------------------------
+//FONT SPRITE			- COMPLETED		----------------------------- 17.5 hours --------------------------------
 //Fix WINDOW DIMENSIONS - TODO
 //TEXTURING				- TODO
 //INDICES				- TODO

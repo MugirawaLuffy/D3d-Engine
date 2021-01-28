@@ -72,22 +72,22 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)DirectXEngine\DirectXEngine\Includes;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)DirectXEngine\Includes;D:\nils\source\DirectXEngine\DirectXEngine\Includes;$(SolutionDir)DirectXEngine\DirectXEngine\Includes;$(IncludePath)</IncludePath>
     <LibraryPath>D:\nils\source\DirectXEngine\DirectXEngine\Libs\x86\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)DirectXEngine\DirectXEngine\Includes;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)DirectXEngine\Includes;D:\nils\source\DirectXEngine\DirectXEngine\Includes;$(SolutionDir)DirectXEngine\DirectXEngine\Includes;$(IncludePath)</IncludePath>
     <LibraryPath>D:\nils\source\DirectXEngine\DirectXEngine\Libs\x86\Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)DirectXEngine\DirectXEngine\Includes;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)DirectXEngine\Includes;$(SolutionDir)DirectXEngine\DirectXEngine\Includes;$(IncludePath)</IncludePath>
     <LibraryPath>D:\nils\source\DirectXEngine\DirectXEngine\Libs\x64\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)DirectXEngine\DirectXEngine\Includes;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)DirectXEngine\Includes;$(SolutionDir)DirectXEngine\DirectXEngine\Includes;$(IncludePath)</IncludePath>
     <LibraryPath>D:\nils\source\DirectXEngine\DirectXEngine\Libs\x64\Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
