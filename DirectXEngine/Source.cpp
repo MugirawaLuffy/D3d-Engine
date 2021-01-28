@@ -53,3 +53,4 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 //Create VertexBuffer   - COMPLETED
 //Draw					- COMPLETED
 //Rasterizer State		- COMPLETED
+//Z-DEPTH-BUFFER		- COMPLETED

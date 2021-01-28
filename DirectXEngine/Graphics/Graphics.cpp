@@ -19,6 +19,8 @@ void Graphics::RenderFrame()
 {
     float bgcolor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
     this->deviceContext->ClearRenderTargetView(this->renderTargetView.Get(), bgcolor);
+    this->deviceContext->ClearDepthStencilView(this->depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
 
     this->deviceContext->IASetInputLayout(this->vertexshader.GetInputLayout());
     this->deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -105,7 +107,38 @@ bool Graphics::InitializeDirectX(HWND hwnd, int width, int height)
         ErrorLogger::Log(hr, "Failed to create render target view");
         return false;
     }
-    this->deviceContext->OMSetRenderTargets(1, this->renderTargetView.GetAddressOf(), NULL);
+    //Describe our Depth/Stencil Buffer
+    D3D11_TEXTURE2D_DESC depthStencilDesc;
+    depthStencilDesc.Width = width;
+    depthStencilDesc.Height = height;
+    depthStencilDesc.MipLevels = 1;
+    depthStencilDesc.ArraySize = 1;
+    depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+    depthStencilDesc.SampleDesc.Count = 1;
+    depthStencilDesc.SampleDesc.Quality = 0;
+    depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
+    depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+    depthStencilDesc.CPUAccessFlags = 0;
+    depthStencilDesc.MiscFlags = 0;
+
+    hr = this->device->CreateTexture2D(&depthStencilDesc, NULL, this->depthStencilBuffer.GetAddressOf());
+    if (FAILED(hr)) //If error occurred
+    {
+        ErrorLogger::Log(hr, "Failed to create depth stencil buffer.");
+        return false;
+    }
+
+    hr = this->device->CreateDepthStencilView(this->depthStencilBuffer.Get(), NULL, this->depthStencilView.GetAddressOf());
+    if (FAILED(hr)) //If error occurred
+    {
+        ErrorLogger::Log(hr, "Failed to create depth stencil view.");
+        return false;
+    }
+
+
+
+    this->deviceContext->OMSetRenderTargets(1, this->renderTargetView.GetAddressOf(), 
+        this->depthStencilView.Get());
 
     //Create the viewport
     D3D11_VIEWPORT viewport;
@@ -116,6 +149,9 @@ bool Graphics::InitializeDirectX(HWND hwnd, int width, int height)
     viewport.Width = static_cast<float>(width);
     viewport.Height = static_cast<float>(height);
 
+    viewport.MinDepth = 0.0f;
+    viewport.MaxDepth = 1.0f;
+
     //Set the viewport
     this->deviceContext->RSSetViewports(1, &viewport);
 
@@ -123,8 +159,8 @@ bool Graphics::InitializeDirectX(HWND hwnd, int width, int height)
     D3D11_RASTERIZER_DESC rasterizerDesc;
     ZeroMemory(&rasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
 
-    //rasterizerDesc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID; //or wireframe
-    rasterizerDesc.FillMode = D3D11_FILL_MODE::D3D11_FILL_WIREFRAME;
+    rasterizerDesc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID; //or wireframe
+    //rasterizerDesc.FillMode = D3D11_FILL_MODE::D3D11_FILL_WIREFRAME;
     rasterizerDesc.CullMode = D3D11_CULL_MODE::D3D11_CULL_BACK;
     hr = this->device->CreateRasterizerState(&rasterizerDesc,
         this->rasterizerState.GetAddressOf());
