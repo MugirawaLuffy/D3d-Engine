@@ -15,7 +15,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_ int			nCmdShow)
 {
 	Engine engine;
-	
 	if (engine.Initialize(hInstance, "Nils DirectX render engine", "defaultWindowClass", 800, 600))
 	{
 		while (engine.ProcessMessages() == true)
