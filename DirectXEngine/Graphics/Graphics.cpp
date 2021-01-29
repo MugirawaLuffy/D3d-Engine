@@ -16,7 +16,7 @@ bool Graphics::Initialize(HWND hwnd, int width, int height)
 
 void Graphics::RenderFrame()
 {
-	float bgcolor[] = { 0.0114f, 0.0125f, 0.0161f, 1.0f };
+	float bgcolor[] = { 0.0149, 0.0139f, 0.0197f, 1.0f };
 	this->deviceContext->ClearRenderTargetView(this->renderTargetView.Get(), bgcolor);
 	this->deviceContext->ClearDepthStencilView(this->depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
@@ -25,12 +25,17 @@ void Graphics::RenderFrame()
 	this->deviceContext->RSSetState(this->rasterizerState.Get());
 	this->deviceContext->OMSetDepthStencilState(this->depthStencilState.Get(), 0);
 	this->deviceContext->PSSetSamplers(0, 1, this->samplerState.GetAddressOf());
-
 	this->deviceContext->VSSetShader(vertexshader.GetShader(), NULL, 0);
 	this->deviceContext->PSSetShader(pixelshader.GetShader(), NULL, 0);
 
-	
 	UINT offset = 0;
+
+	//Update Constant Buffer
+	constantBuffer.data.xOffset = 0.0f;
+	constantBuffer.data.yOffset = 0.25f;
+	if (!constantBuffer.ApplyChanges())
+		return;
+	this->deviceContext->VSSetConstantBuffers(0, 1, this->constantBuffer.GetAddressOf());
 
 	//Square
 	this->deviceContext->PSSetShaderResources(0, 1, this->myTexture.GetAddressOf());
@@ -38,10 +43,9 @@ void Graphics::RenderFrame()
 	this->deviceContext->IASetIndexBuffer(indicesBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 	this->deviceContext->DrawIndexed(indicesBuffer.BufferSize(), 0, 0);
 
-
 	//Draw Text
 	spriteBatch->Begin();
-	spriteFont->DrawString(spriteBatch.get(), L"Nils Rendering Engine", DirectX::XMFLOAT2(0, 0), DirectX::Colors::White, 0.0f, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f));
+	spriteFont->DrawString(spriteBatch.get(), L"NILS' DirectX Renderer", DirectX::XMFLOAT2(0, 0), DirectX::Colors::White, 0.0f, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f));
 	spriteBatch->End();
 
 	this->swapchain->Present(1, NULL);
@@ -290,6 +294,14 @@ bool Graphics::InitializeScene()
 	if (FAILED(hr))
 	{
 		ErrorLogger::Log(hr, "Failed to create WIC texture from file");
+		return false;
+	}
+
+	//Initialize ConstantBuffer
+	hr = this->constantBuffer.Initialize(this->device.Get(), this->deviceContext.Get());
+	if (FAILED(hr))
+	{
+		ErrorLogger::Log(hr, "Failed to initialize constant buffer.");
 		return false;
 	}
 
