@@ -113,12 +113,15 @@
     <ClInclude Include="Graphics\Shaders.h">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\VertexBuffer.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="pixelshader.hlsl">
       <Filter>Resource Files</Filter>
     </FxCompile>
-    <FxCompile Include="Graphics\vertexshader.hlsl">
+    <FxCompile Include="vertexshader.hlsl">
       <Filter>Resource Files</Filter>
     </FxCompile>
   </ItemGroup>

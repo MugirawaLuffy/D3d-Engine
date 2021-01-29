@@ -3,7 +3,7 @@
 * @author Nils Drees
 * C++20 Iso needed to compile x86
 * Licensed under Apache 2.0
-* 20 hours development
+* 22 hours development
 */
 
 #include "Engine.h"
@@ -82,6 +82,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 //Fix WINDOW DIMENSIONS - COMPLETED
 //TEXTURING				- COMPLETED
 //INDICES				- COMPLETED
-//VERTEXBUFFER TEMPLATE	- TODO
+//VERTEXBUFFER TEMPLATE	- COMPLETED			
 //INDEX BUFFER CLASS	- TODO
 //CONSTANT BUFFER		- TODO
