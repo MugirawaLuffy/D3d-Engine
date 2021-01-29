@@ -13,6 +13,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_ LPWSTR			lpCMDLine,
 	_In_ int			nCmdShow)
 {
+	HRESULT hr = CoInitialize(NULL);
+	if (FAILED(hr))
+	{
+		ErrorLogger::Log(hr, "Failed to CoInitialize");
+	}
 	std::string applicationMode = "";
 
 #pragma region DetermineRuntime
@@ -76,7 +81,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 //FONT SPRITE			- COMPLETED		----------------------------- 17.5 hours --------------------------------
 //Fix WINDOW DIMENSIONS - COMPLETED
 //TEXTURING				- COMPLETED
-//INDICES				- TODO
+//INDICES				- COMPLETED
 //VERTEXBUFFER TEMPLATE	- TODO
 //INDEX BUFFER CLASS	- TODO
 //CONSTANT BUFFER		- TODO
