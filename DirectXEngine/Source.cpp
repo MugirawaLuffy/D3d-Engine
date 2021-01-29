@@ -3,38 +3,20 @@
 * @author Nils Drees
 * C++20 Iso needed to compile x86
 * Licensed under Apache 2.0
-* 20 hours development
+* 15.5 hours development
 */
 
 #include "Engine.h"
+
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE  hPrevInstance,
 	_In_ LPWSTR			lpCMDLine,
 	_In_ int			nCmdShow)
 {
-	std::string applicationMode = "";
-
-#pragma region DetermineRuntime
-		if (IsDebuggerPresent() == TRUE)
-		{
-#ifdef _DEBUG //DebugMode
-#ifdef _WIN64
-			applicationMode = "Debug x64";
-#else //x86
-			applicationMode = "Debug x86";
-#endif
-#else //ReleaseMode
-#ifdef _WIN64
-			applicationMode = "Release x64";
-#else
-			applicationMode = "Release x86";
-#endif
-#endif
-		}
-
 	Engine engine;
-	if (engine.Initialize(hInstance, "Nils DirectX Render Engine - " + applicationMode, "defaultWindowClass", 800, 600))
+	
+	if (engine.Initialize(hInstance, "Nils DirectX render engine", "defaultWindowClass", 800, 600))
 	{
 		while (engine.ProcessMessages() == true)
 		{
@@ -71,6 +53,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 //----------------------------Advanced Setup for DirectX---------------------------------------------------------
 //Create VertexBuffer   - COMPLETED
 //Draw					- COMPLETED
+//<<<<<<< Updated upstream
+//Rasterizer State		- COMPLETED
+
 //Rasterizer State		- COMPLETED
 //Z-DEPTH-BUFFER		- COMPLETED
 //FONT SPRITE			- COMPLETED		----------------------------- 17.5 hours --------------------------------
@@ -81,3 +66,4 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 //INDEX BUFFER CLASS	- TODO
 //CONSTANT BUFFER		- TODO
 //
+
