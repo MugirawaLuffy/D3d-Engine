@@ -92,5 +92,5 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 //Matrix Transform		- COMPLETED
 //ViewProjection Matrix - COMPLETED
 //CameraClass Setup		- COMPLETED
-//CameraLookAt			- TODO
+//CameraLookAt			- COMPLETED
 //MovableCamera			- TODO
