@@ -93,4 +93,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 //ViewProjection Matrix - COMPLETED
 //CameraClass Setup		- COMPLETED
 //CameraLookAt			- COMPLETED
-//MovableCamera			- TODO
+//MovableCamera			- COMPLETED		------------------------------ 26 hours ---------------------------------
+
+//----------------------------------- Optimize ------------------------------------------------------------------
+//ImGuiSetup			- COMPLETED
+//Fixing memory leaks	- TODO
+//Implementing blending	- TODO
+//Clean up Code			- TODO
+//Detailed Errors		- TODO
