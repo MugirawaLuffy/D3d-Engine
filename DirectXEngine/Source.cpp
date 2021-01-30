@@ -108,5 +108,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 //Detailed Errors		- COMPLETED
 
 //----------------------------------- 3D Models -----------------------------------------------------------------
-//Create Model Class	- TODO
+//Create Model Class	- COMPLETE
+//Move 3D Models		- TODO
 //Load 3D Models		- TODO

@@ -37,70 +37,36 @@ void Graphics::RenderFrame()
 	this->deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	this->deviceContext->RSSetState(this->rasterizerState.Get());
 	this->deviceContext->OMSetDepthStencilState(this->depthStencilState.Get(), 0);
-	this->deviceContext->OMSetBlendState(this->blendState.Get(), NULL, 0xFFFFFFFF);
+	this->deviceContext->OMSetBlendState(NULL, NULL, 0xFFFFFFFF);
 	this->deviceContext->PSSetSamplers(0, 1, this->samplerState.GetAddressOf());
 	this->deviceContext->VSSetShader(vertexshader.GetShader(), NULL, 0);
 	this->deviceContext->PSSetShader(pixelshader.GetShader(), NULL, 0);
 
-	UINT offset = 0;
-	
-	static float alpha = 0.5f;
-	{//PinkTexture
-		//Update Constant Buffer
-		static float translationOffset[3] = { 0, 0, -1.0f };
-
-		XMMATRIX world = XMMatrixTranslation(translationOffset[0], translationOffset[1], translationOffset[2]);
-
-		cb_vs_vertexshader.data.mat = world * camera.GetViewMatrix() * camera.GetProjectionMatrix();
-		cb_vs_vertexshader.data.mat = DirectX::XMMatrixTranspose(cb_vs_vertexshader.data.mat);
-
-		if (!cb_vs_vertexshader.ApplyChanges())
-			return;
-		this->deviceContext->VSSetConstantBuffers(0, 1, this->cb_vs_vertexshader.GetAddressOf());
-
-		//pixelShader
-
-		this->cb_ps_pixelshader.data.alpha = alpha;
-		this->cb_ps_pixelshader.ApplyChanges();
-		this->deviceContext->PSSetConstantBuffers(0, 1, this->cb_ps_pixelshader.GetAddressOf());
-
-		//Square
-		this->deviceContext->PSSetShaderResources(0, 1, this->pavementTexture.GetAddressOf());
-		this->deviceContext->IASetVertexBuffers(0, 1, vertexBuffer.GetAddressOf(), vertexBuffer.StridePtr(), &offset);
-		this->deviceContext->IASetIndexBuffer(indicesBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-		this->deviceContext->RSSetState(this->rasterizerState_CullFront.Get());
-		this->deviceContext->DrawIndexed(indicesBuffer.BufferSize(), 0, 0);
-		this->deviceContext->RSSetState(this->rasterizerState.Get());
-		this->deviceContext->DrawIndexed(indicesBuffer.BufferSize(), 0, 0);
+	{
+		this->model.Draw(camera.GetViewMatrix() * camera.GetProjectionMatrix());
 	}
-
 
 	//Draw Text
 	static int fpsCounter = 0;
 	static std::string fpsString = "FPS: 0";
 	fpsCounter += 1;
-	if (fpsTimer.GetMilisecondsElapsed() > 1000.0f)
+	if (fpsTimer.GetMilisecondsElapsed() > 1000.0)
 	{
-		fpsString = "FPS: " + std::to_string(fpsCounter);
+		fpsString = "NilsRenderEngine v1.1.4: FPS: " + std::to_string(fpsCounter);
 		fpsCounter = 0;
 		fpsTimer.Restart();
 	}
 	spriteBatch->Begin();
-	spriteFont->DrawString(spriteBatch.get(), StringConverter::StringToWide(fpsString).c_str(), DirectX::XMFLOAT2(0, 0), 
-		DirectX::Colors::White, 0.0f, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f));
+	spriteFont->DrawString(spriteBatch.get(), StringConverter::StringToWide(fpsString).c_str(), DirectX::XMFLOAT2(0, 0), DirectX::Colors::White, 0.0f, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f));
 	spriteBatch->End();
 
-	
-	//ImGui
+	static int counter = 0;
 	// Start the Dear ImGui frame
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 	//Create ImGui Test Window
-	ImGui::Begin("Debug");
-	ImGui::Text("Nils DirectX renderer v1.0.5");
-	ImGui::DragFloat("Alpha", &alpha, 0.1f, 0.0f, 1.0f);
-	
+	ImGui::Begin("Test");
 	ImGui::End();
 	//Assemble Together Draw Data
 	ImGui::Render();
@@ -196,20 +162,16 @@ bool Graphics::InitializeDirectX(HWND hwnd)
 		//Create Rasterizer State
 		CD3D11_RASTERIZER_DESC rasterizerDesc(D3D11_DEFAULT);
 		hr = this->device->CreateRasterizerState(&rasterizerDesc, this->rasterizerState.GetAddressOf());
-		COM_ERROR_IF_FAILED(hr, "Failed to create rasterizer state");
+		COM_ERROR_IF_FAILED(hr, "Failed to create rasterizer state.");
 
-		//Create Rasterizer State cull front
+		//Create Rasterizer State for culling front
 		CD3D11_RASTERIZER_DESC rasterizerDesc_CullFront(D3D11_DEFAULT);
 		rasterizerDesc_CullFront.CullMode = D3D11_CULL_MODE::D3D11_CULL_FRONT;
-		hr = this->device->CreateRasterizerState(&rasterizerDesc_CullFront, this->rasterizerState.GetAddressOf());
-		COM_ERROR_IF_FAILED(hr, "Failed to create rasterizer state");
+		hr = this->device->CreateRasterizerState(&rasterizerDesc_CullFront, this->rasterizerState_CullFront.GetAddressOf());
+		COM_ERROR_IF_FAILED(hr, "Failed to create rasterizer state.");
 
-		//create blend state
-		D3D11_BLEND_DESC blendDesc;
-		ZeroMemory(&blendDesc, sizeof(blendDesc));
-		D3D11_RENDER_TARGET_BLEND_DESC rtbd;
-		ZeroMemory(&rtbd, sizeof(rtbd));
-
+		//Create Blend State
+		D3D11_RENDER_TARGET_BLEND_DESC rtbd = { 0 };
 		rtbd.BlendEnable = true;
 		rtbd.SrcBlend = D3D11_BLEND::D3D11_BLEND_SRC_ALPHA;
 		rtbd.DestBlend = D3D11_BLEND::D3D11_BLEND_INV_SRC_ALPHA;
@@ -219,10 +181,11 @@ bool Graphics::InitializeDirectX(HWND hwnd)
 		rtbd.BlendOpAlpha = D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
 		rtbd.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE::D3D11_COLOR_WRITE_ENABLE_ALL;
 
+		D3D11_BLEND_DESC blendDesc = { 0 };
 		blendDesc.RenderTarget[0] = rtbd;
 
 		hr = this->device->CreateBlendState(&blendDesc, this->blendState.GetAddressOf());
-		COM_ERROR_IF_FAILED(hr, "Failed to create blend state");
+		COM_ERROR_IF_FAILED(hr, "Failed to create blend state.");
 
 		spriteBatch = std::make_unique<DirectX::SpriteBatch>(this->deviceContext.Get());
 		spriteFont = std::make_unique<DirectX::SpriteFont>(this->device.Get(), L"Data\\Fonts\\comic_sans_ms_16.spritefont");
@@ -287,47 +250,9 @@ bool Graphics::InitializeScene()
 {
 	try
 	{
-		//Textured Square
-		Vertex v[] =
-		{
-			Vertex(-0.5f, -0.5f, -0.5f, 0.0f, 1.0f),  //FRONT Bottom Left 
-			Vertex(-0.5f,   0.5f, -0.5f, 0.0f, 0.0f), //FRONT Top Left
-			Vertex(0.5f,  0.5f, -0.5f, 1.0f, 0.0f),   //FRONT Top Right
-			Vertex(0.5f,  -0.5f, -0.5f, 1.0f, 1.0f),  //FRONT Bottom right
-
-			Vertex(-0.5f, -0.5f, 0.5f, 0.0f, 1.0f),  //BACK Bottom Left 
-			Vertex(-0.5f,   0.5f, 0.5f, 0.0f, 0.0f), //BACK Top Left
-			Vertex(0.5f,  0.5f, 0.5f, 1.0f, 0.0f),   //BACK Top Right
-			Vertex(0.5f,  -0.5f, 0.5f, 1.0f, 1.0f),  //BACK Bottom right
-		};
-		//Load VertexData
-		HRESULT hr = this->vertexBuffer.Initialize(this->device.Get(), v, ARRAYSIZE(v));
-		COM_ERROR_IF_FAILED(hr, "Failed to Initialize vertex buffer");
-
-		DWORD indices[] =
-		{
-			0, 1, 2, //FRONT
-			0, 2, 3, //FRONT
-			4, 7, 6, //BACK 
-			4, 6, 5, //BACK
-			3, 2, 6, //RIGHT SIDE
-			3, 6, 7, //RIGHT SIDE
-			4, 5, 1, //LEFT SIDE
-			4, 1, 0, //LEFT SIDE
-			1, 5, 6, //TOP
-			1, 6, 2, //TOP
-			0, 3, 7, //BOTTOM
-			0, 7, 4, //BOTTOM
-
-		};
-
-		//Load Index Data
-
-		hr = this->indicesBuffer.Initialize(this->device.Get(), indices, ARRAYSIZE(indices));
-		COM_ERROR_IF_FAILED(hr, "Failed to initialize index buffer");
 
 		//Load Textures
-		hr = DirectX::CreateWICTextureFromFile(this->device.Get(), L"Data/Textures/grass.jpg", nullptr, grassTexture.GetAddressOf());
+		HRESULT hr = DirectX::CreateWICTextureFromFile(this->device.Get(), L"Data/Textures/grass.jpg", nullptr, grassTexture.GetAddressOf());
 		COM_ERROR_IF_FAILED(hr, "Failed to create WIC texture from file");
 
 		hr = DirectX::CreateWICTextureFromFile(this->device.Get(), L"Data/Textures/square.png", nullptr, pinkTexture.GetAddressOf());
@@ -343,9 +268,14 @@ bool Graphics::InitializeScene()
 		hr = this->cb_ps_pixelshader.Initialize(this->device.Get(), this->deviceContext.Get());
 		COM_ERROR_IF_FAILED(hr, "Failed to initialize constant buffer");
 
+		//Initialize model(s)
+		if (!model.Initialize(this->device.Get(), this->deviceContext.Get(), this->pavementTexture.Get(), cb_vs_vertexshader))
+			false;
+
 		camera.SetPosition(0.0f, 0.0f, -2.0f);
 		camera.SetProjectionValues(90.0f, static_cast<float>(windowWidth) / static_cast<float>(windowHeight),
 			0.1f, 1000.0f);
+
 	}
 	catch (COMException& exception)
 	{
