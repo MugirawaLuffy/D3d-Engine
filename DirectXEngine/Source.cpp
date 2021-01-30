@@ -18,6 +18,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	{
 		ErrorLogger::Log(hr, "Failed to CoInitialize");
 	}
+	
+	/*COMException exception(0, "FATAL ERROR", __FILE__, __FUNCTION__, __LINE__);
+	ErrorLogger::Log(exception);*/
+
+
 	std::string applicationMode = "";
 
 #pragma region DetermineRuntime
