@@ -104,8 +104,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 //ImGuiSetup			- COMPLETED
 //Fixing memory leaks	- COMPLETED
 //Implementing blending	- COMPLETED - AND IT SUCKS
-//Clean up Code			- TODO
-//Detailed Errors		- TODO
+//Clean up Code			- COMPLETED
+//Detailed Errors		- COMPLETED
 
 //----------------------------------- 3D Models -----------------------------------------------------------------
 //Create Model Class	- TODO
