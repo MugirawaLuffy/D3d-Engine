@@ -3,7 +3,7 @@
 * @author Nils Drees
 * C++20 Iso needed to compile x86
 * Licensed under Apache 2.0
-* 23.5 hours development
+* 32 hours development
 */
 
 #include "Engine.h"
@@ -98,6 +98,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 //----------------------------------- Optimize ------------------------------------------------------------------
 //ImGuiSetup			- COMPLETED
 //Fixing memory leaks	- COMPLETED
-//Implementing blending	- TODO
+//Implementing blending	- COMPLETED - AND IT SUCKS
 //Clean up Code			- TODO
 //Detailed Errors		- TODO
+
+//----------------------------------- 3D Models -----------------------------------------------------------------
+//Create Model Class	- TODO
+//Load 3D Models		- TODO
