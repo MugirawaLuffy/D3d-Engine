@@ -97,7 +97,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 //----------------------------------- Optimize ------------------------------------------------------------------
 //ImGuiSetup			- COMPLETED
-//Fixing memory leaks	- TODO
+//Fixing memory leaks	- COMPLETED
 //Implementing blending	- TODO
 //Clean up Code			- TODO
 //Detailed Errors		- TODO
