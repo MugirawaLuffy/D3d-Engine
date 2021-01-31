@@ -8,15 +8,29 @@
 template<class T>
 class VertexBuffer
 {
-private:
-	VertexBuffer(const VertexBuffer<T> &rhs);
+	
 private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> buffer;
-	std::unique_ptr<UINT> stride;
+	std::shared_ptr<UINT> stride;
 	UINT bufferSize = 0;
 
 public:
 	VertexBuffer() {};
+	VertexBuffer(const VertexBuffer<T>& rhs)
+	{
+		this->buffer = rhs.buffer;
+		this->bufferSize = rhs.bufferSize;
+		this->stride = rhs.stride;
+	}
+
+	VertexBuffer<T>& operator=(const VertexBuffer<T>& a)
+	{
+		this->buffer = a.buffer;
+		this->bufferSize = a.bufferSize;
+		this->stride = a.stride;
+		return *this;
+	}
+
 	ID3D11Buffer* Get() const
 	{
 		return buffer.Get();
@@ -43,7 +57,7 @@ public:
 			buffer.Reset();
 		this->bufferSize = numVertices;
 		if(this->stride.get() == nullptr)
-			this->stride = std::make_unique<UINT>(sizeof(T));
+			this->stride = std::make_shared<UINT>(sizeof(T));
 
 		D3D11_BUFFER_DESC vertexBufferDesc;
 		ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
