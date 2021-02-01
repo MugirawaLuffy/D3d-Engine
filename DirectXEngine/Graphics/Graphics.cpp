@@ -73,7 +73,7 @@ void Graphics::RenderFrame()
 	//Render Draw Data
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
-	this->swapchain->Present(0, NULL);
+	this->swapchain->Present(1, NULL);
 }
 
 bool Graphics::InitializeDirectX(HWND hwnd)
@@ -157,6 +157,7 @@ bool Graphics::InitializeDirectX(HWND hwnd)
 
 		//Create Rasterizer State
 		CD3D11_RASTERIZER_DESC rasterizerDesc(D3D11_DEFAULT);
+		rasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
 		hr = this->device->CreateRasterizerState(&rasterizerDesc, this->rasterizerState.GetAddressOf());
 		COM_ERROR_IF_FAILED(hr, "Failed to create rasterizer state.");
 
